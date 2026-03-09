@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SkinAI — Transparent Deep Learning Framework</title>
@@ -34,8 +36,19 @@
             pointer-events: none;
         }
 
+        [data-theme="minimal"] #splashScreen {
+            background: #ffffff;
+        }
+
         .splash-logo {
             animation: splashPop 0.7s cubic-bezier(.34, 1.56, .64, 1) both;
+        }
+
+        .splash-title-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
 
         .splash-title {
@@ -46,8 +59,28 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: splashFadeUp 0.8s 0.3s ease both;
             text-align: center;
+            min-height: clamp(2.5rem, 6vw, 4rem);
+        }
+
+        .splash-cursor {
+            width: clamp(3px, 0.5vw, 6px);
+            height: clamp(2rem, 5vw, 3.5rem);
+            background: #38bdf8;
+            animation: blink-caret 0.75s step-end infinite;
+            border-radius: 2px;
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
         }
 
         .splash-sub {
@@ -230,37 +263,182 @@
         .disc-accept:hover {
             opacity: 0.9;
         }
+
+        /* ---- Main Loader Overlay ---- */
+        .main-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(10, 10, 26, 0.98);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .main-loader.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loader-content {
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+            animation: loaderPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes loaderPop {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .loader-spinner-wrap {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 32px;
+        }
+
+        .loader-ring {
+            position: absolute;
+            inset: 0;
+            border: 4px solid rgba(124, 58, 237, 0.1);
+            border-radius: 50%;
+        }
+
+        .loader-ring-active {
+            position: absolute;
+            inset: 0;
+            border: 4px solid transparent;
+            border-top-color: #7c3aed;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
+
+        .loader-icon {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            font-size: 24px;
+            animation: pulseIcon 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseIcon {
+
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: scale(0.9);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        .loader-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a78bfa, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .loader-sub {
+            font-size: 15px;
+            color: #94a3b8;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .loader-progress-wrap {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .loader-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed, #0ea5e9, #10b981);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
-<body>
-    <div id="login-view">
 
-    <!-- ============ SPLASH SCREEN ============ -->
-    <div id="splashScreen">
-        <div class="splash-logo">
-            <svg width="80" height="80" viewBox="0 0 40 40" fill="none">
-                <circle cx="20" cy="20" r="20" fill="url(#splashGrad)" />
-                <path d="M12 20c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8" stroke="#fff" stroke-width="2.5"
-                    stroke-linecap="round" />
-                <circle cx="20" cy="20" r="3" fill="#fff" />
-                <path d="M20 9v3M20 28v3M9 20h3M28 20h3" stroke="#fff" stroke-width="2" stroke-linecap="round" />
-                <defs>
-                    <linearGradient id="splashGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#7c3aed" />
-                        <stop offset="0.5" stop-color="#0ea5e9" />
-                        <stop offset="1" stop-color="#10b981" />
-                    </linearGradient>
-                </defs>
-            </svg>
+<!-- Global Loading Overlay -->
+<div id="mainLoader" class="main-loader">
+    <div class="loader-content">
+        <div class="loader-spinner-wrap">
+            <div class="loader-ring"></div>
+            <div class="loader-ring-active"></div>
+            <div class="loader-icon">🔬</div>
         </div>
-        <div class="splash-title">Welcome to SkinAI</div>
-        <div class="splash-sub">Transparent Deep Learning · Dermatology</div>
-        <div class="splash-bar-wrap">
-            <div class="splash-bar"></div>
+        <h3 class="loader-title">Analyzing Specimen</h3>
+        <p class="loader-sub">Deep learning models are processing the skin lesion patterns for clinical features.</p>
+        <div class="loader-progress-wrap">
+            <div id="loaderFill" class="loader-progress-fill"></div>
         </div>
     </div>
-    <!-- ======================================= -->
+</div>
+
+
+<!-- ============ SPLASH SCREEN ============ -->
+<div id="splashScreen">
+    <div class="splash-logo">
+        <svg width="80" height="80" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="20" fill="url(#splashGrad)" />
+            <path d="M12 20c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8" stroke="#fff" stroke-width="2.5"
+                stroke-linecap="round" />
+            <circle cx="20" cy="20" r="3" fill="#fff" />
+            <path d="M20 9v3M20 28v3M9 20h3M28 20h3" stroke="#fff" stroke-width="2" stroke-linecap="round" />
+            <defs>
+                <linearGradient id="splashGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#7c3aed" />
+                    <stop offset="0.5" stop-color="#0ea5e9" />
+                    <stop offset="1" stop-color="#10b981" />
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+    <div class="splash-title-container">
+        <div class="splash-title" id="typewriterTitle"></div>
+        <div class="splash-cursor"></div>
+    </div>
+    <div class="splash-sub">Transparent Deep Learning · Dermatology</div>
+    <div class="splash-bar-wrap">
+        <div class="splash-bar"></div>
+    </div>
+</div>
+<!-- ======================================= -->
+
+<div id="login-view">
+
 
     <div class="bg-animation">
         <div class="particle" style="--x:10%;--y:20%;--d:6s;--s:80px;--c:#7c3aed22"></div>
@@ -332,7 +510,8 @@
             <div class="stats-row">
                 <div class="stat"><span class="stat-num">97.4%</span><span class="stat-label">Accuracy</span></div>
                 <div class="stat-divider"></div>
-                <div class="stat"><span class="stat-num">8</span><span class="stat-label">Disease Classes</span></div>
+                <div class="stat"><span class="stat-num">8</span><span class="stat-label">Disease Classes</span>
+                </div>
                 <div class="stat-divider"></div>
                 <div class="stat"><span class="stat-num">&lt;2s</span><span class="stat-label">Response Time</span>
                 </div>
@@ -493,6 +672,7 @@
                 </form>
 
                 <div class="form-footer">
+                    <p>Copyright &copy; 2026 <b>Charan Tejash</b>. All rights reserved.</p>
                     <p>By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy
                             Policy</a></p>
                     <div class="security-badge">
@@ -507,11 +687,11 @@
         </div>
     </div>
 
-    
-    </div>
 
-    <div id="dashboard-view" style="display:none;">
-<!-- SIDEBAR -->
+</div>
+
+<div id="dashboard-view" style="display:none;">
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-wrap">
@@ -593,6 +773,10 @@
                 </svg>
             </button>
         </div>
+        <div class="sidebar-footer"
+            style="padding:12px 16px; font-size:10px; color:var(--text3); border-top:1px solid var(--border); text-align:center;">
+            &copy; 2026 <b>Charan Tejash</b> · SkinAI Research
+        </div>
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -611,10 +795,25 @@
                 <p id="pageSubtitle">Upload or capture a skin lesion image for AI analysis</p>
             </div>
             <div class="topbar-actions">
-                <div class="status-badge">
-                    <span class="status-dot"></span>
-                    <span data-i18n="modelReady">Model Ready</span>
-                </div>
+                <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()"
+                    title="Toggle Minimal/Light Theme">
+                    <svg class="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        width="18" height="18">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                    </svg>
+                    <svg class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        width="18" height="18" style="display:none;">
+                        <circle cx="12" cy="12" r="5" />
+                        <line x1="12" y1="1" x2="12" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="23" />
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                        <line x1="1" y1="12" x2="3" y2="12" />
+                        <line x1="21" y1="12" x2="23" y2="12" />
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                    </svg>
+                </button>
                 <!-- Language Switcher (Dashboard) -->
                 <div class="lang-switcher" id="dashLangSwitcher">
                     <button class="lang-toggle" onclick="toggleDashLang()">
@@ -789,7 +988,8 @@
                                     d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v11m0 0h10m-10 0H5a2 2 0 0 1-2-2V7m2 8v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" />
                             </svg></div>
                         <h3>No Analysis Yet</h3>
-                        <p>Upload or capture a skin lesion image and click "Analyze Image" to get AI-powered diagnosis
+                        <p>Upload or capture a skin lesion image and click "Analyze Image" to get AI-powered
+                            diagnosis
                             with Grad-CAM visualization.</p>
                     </div>
                     <div id="quickResults" style="display:none">
@@ -849,9 +1049,10 @@
                         </div>
                         <!-- Food tip after result -->
                         <div class="food-tip-card" id="foodTipCard" style="display:none">
-                            <div class="food-tip-header">🥗 <span data-i18n="navFood">Food & Nutrition Tip</span></div>
+                            <div class="food-tip-header">🥗 <span data-i18n="navFood">Food & Nutrition Tip</span>
+                            </div>
                             <div id="foodTipContent"></div>
-                            
+
                         </div>
                         <button class="view-full-btn" onclick="showSection('results')">View Full Report →</button>
                     </div>
@@ -965,119 +1166,167 @@
         </section>
     </main>
 
-    
-    </div>
+
+</div>
 
 
-    <!-- Unified Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase-config.js"></script>
-    <script src="js/i18n.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/diseases.js"></script>
-    <script src="js/food.js"></script>
-    <script src="js/gradcam.js"></script>
-    <script src="js/app.js"></script>
+<!-- Unified Scripts (v1.2) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js?v=1.2"></script>
+<script src="js/i18n.js?v=1.2"></script>
+<script src="js/auth.js?v=1.2"></script>
+<script src="js/diseases.js?v=1.2"></script>
+<script src="js/food.js?v=1.2"></script>
+<script src="js/gradcam.js?v=1.2"></script>
+<script src="js/app.js?v=1.2"></script>
 
 
 <script>
-        // Language switcher for login page
-        function toggleLangMenu() {
-            const m = document.getElementById('langMenu');
-            m.style.display = m.style.display === 'none' ? 'flex' : 'none';
-        }
-        function selectLang(lang, label) {
-            document.getElementById('currentLangLabel').textContent = label;
+    // Language switcher for login page
+    function toggleLangMenu() {
+        const m = document.getElementById('langMenu');
+        m.style.display = m.style.display === 'none' ? 'flex' : 'none';
+    }
+    function selectLang(lang, label) {
+        document.getElementById('currentLangLabel').textContent = label;
+        document.getElementById('langMenu').style.display = 'none';
+        setLanguage(lang);
+    }
+    document.addEventListener('click', (e) => {
+        if (!document.getElementById('langSwitcher').contains(e.target)) {
             document.getElementById('langMenu').style.display = 'none';
-            setLanguage(lang);
         }
-        document.addEventListener('click', (e) => {
-            if (!document.getElementById('langSwitcher').contains(e.target)) {
-                document.getElementById('langMenu').style.display = 'none';
-            }
+    });
+    // Init language
+    window.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem('skinai_lang') || 'en';
+        const labels = { en: 'EN', te: 'తె', ta: 'த', hi: 'हि' };
+        document.getElementById('currentLangLabel').textContent = labels[saved] || 'EN';
+        document.querySelectorAll('.lang-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.lang === saved);
         });
-        // Init language
-        window.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('skinai_lang') || 'en';
-            const labels = { en: 'EN', te: 'తె', ta: 'த', hi: 'हि' };
-            document.getElementById('currentLangLabel').textContent = labels[saved] || 'EN';
-            document.querySelectorAll('.lang-option').forEach(el => {
-                el.classList.toggle('active', el.dataset.lang === saved);
-            });
-            applyTranslations();
-        });
-    </script>
+        applyTranslations();
+    });
+</script>
 
-    
+
 
 <script>
-        // Dashboard language switcher
-        function toggleDashLang() {
-            const m = document.getElementById('dashLangMenu');
-            m.style.display = m.style.display === 'none' ? 'flex' : 'none';
-        }
-        function selectDashLang(lang, label) {
-            document.getElementById('dashLangLabel').textContent = label;
-            document.getElementById('dashLangMenu').style.display = 'none';
-            document.querySelectorAll('#dashLangSwitcher .lang-option').forEach(el => {
-                el.classList.toggle('active', el.dataset.lang === lang);
-            });
-            setLanguage(lang);
-            // Re-render food section if active
-            if (document.getElementById('section-food').classList.contains('active')) {
-                renderFoodSection();
-            }
-        }
-        document.addEventListener('click', (e) => {
-            const sw = document.getElementById('dashLangSwitcher');
-            if (sw && !sw.contains(e.target)) {
-                document.getElementById('dashLangMenu').style.display = 'none';
-            }
+    // Dashboard language switcher
+    function toggleDashLang() {
+        const m = document.getElementById('dashLangMenu');
+        m.style.display = m.style.display === 'none' ? 'flex' : 'none';
+    }
+    function selectDashLang(lang, label) {
+        document.getElementById('dashLangLabel').textContent = label;
+        document.getElementById('dashLangMenu').style.display = 'none';
+        document.querySelectorAll('#dashLangSwitcher .lang-option').forEach(el => {
+            el.classList.toggle('active', el.dataset.lang === lang);
         });
-    </script>
+        setLanguage(lang);
+        // Re-render food section if active
+        if (document.getElementById('section-food').classList.contains('active')) {
+            renderFoodSection();
+        }
+    }
+    document.addEventListener('click', (e) => {
+        const sw = document.getElementById('dashLangSwitcher');
+        if (sw && !sw.contains(e.target)) {
+            document.getElementById('dashLangMenu').style.display = 'none';
+        }
+    });
+</script>
 
-    
+
 
 <!-- ============ DISCLAIMER MODAL ============ -->
-    <div id="disclaimerModal" style="display:none">
-        <div class="disc-box">
-            <div class="disc-icon">⚕️</div>
-            <div class="disc-title">Medical Disclaimer</div>
-            <div class="disc-body">
-                <b>SkinAI is an educational and research tool — not a medical device.</b>
-                <ul>
-                    <li>Results are AI-generated and <b>not a substitute</b> for professional dermatological diagnosis.
-                    </li>
-                    <li>Do <b>not</b> start, stop, or change any medication based on this analysis.</li>
-                    <li>Always consult a <b>qualified dermatologist or physician</b> for any skin concerns.</li>
-                    <li>In case of serious or urgent symptoms, seek <b>immediate medical attention</b>.</li>
-                </ul>
-                By continuing, you acknowledge that SkinAI provides informational content only.
-            </div>
-            <button class="disc-accept" onclick="acceptDisclaimer()">✅ I Understand &amp; Continue</button>
+<div id="disclaimerModal" style="display:none">
+    <div class="disc-box">
+        <div class="disc-icon">⚕️</div>
+        <div class="disc-title">Medical Disclaimer & Copyright</div>
+        <div class="disc-body">
+            <b>SkinAI is an educational and research tool developed by Charan Tejash.</b>
+            <ul>
+                <li>Results are AI-generated based on training data and are <b>not a substitute</b> for professional
+                    dermatological diagnosis.</li>
+                <li>This tool is provided "as-is" for research purposes. All algorithms and designs are &copy; 2026
+                    <b>Charan Tejash</b>.
+                </li>
+                <li>Do <b>not</b> start, stop, or change any medication based on this analysis.</li>
+                <li>Always consult a <b>qualified dermatologist or physician</b> for any skin concerns.</li>
+            </ul>
+            By continuing, you acknowledge that SkinAI provides informational content only.
         </div>
+        <button class="disc-accept" onclick="acceptDisclaimer()">✅ I Understand &amp; Continue</button>
     </div>
+</div>
 
-    <script>
-        // ---- Splash Screen ----
-        window.addEventListener('DOMContentLoaded', () => {
-            const splash = document.getElementById('splashScreen');
-            setTimeout(() => {
-                splash.classList.add('hide');
-                setTimeout(() => splash.style.display = 'none', 650);
-            }, 2800);
-        });
-        // ---- Disclaimer ----
-        function showDisclaimer() {
-            const modal = document.getElementById('disclaimerModal');
-            if (modal) { modal.style.display = 'flex'; }
+<script>
+    // ---- Theme Toggle (Minimalistic/Light Mode) ----
+    const TH_KEY = 'skinai_theme';
+    function applyTheme(theme) {
+        const isLight = theme === 'minimal';
+        if (isLight) {
+            document.documentElement.setAttribute('data-theme', 'minimal');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
         }
-        function acceptDisclaimer() {
-            sessionStorage.setItem('skinai_disclaimer_seen', '1');
-            const modal = document.getElementById('disclaimerModal');
-            if (modal) modal.style.display = 'none';
+
+        const btn = document.getElementById('themeToggleBtn');
+        if (btn) {
+            btn.querySelector('.icon-dark').style.display = isLight ? 'none' : 'block';
+            btn.querySelector('.icon-light').style.display = isLight ? 'block' : 'none';
         }
-    </script>
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.getAttribute('data-theme');
+        const newTheme = current === 'minimal' ? 'dark' : 'minimal';
+        localStorage.setItem(TH_KEY, newTheme);
+        applyTheme(newTheme);
+    }
+
+    // Init Theme
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem(TH_KEY) || 'dark';
+        applyTheme(savedTheme);
+    });
+
+    // ---- Splash Screen ----
+    window.addEventListener('DOMContentLoaded', () => {
+        const splash = document.getElementById('splashScreen');
+        const titleEl = document.getElementById('typewriterTitle');
+        const text = "WELCOME TO SKIN AI";
+        let i = 0;
+
+        function typeWriter() {
+            if (i < text.length) {
+                titleEl.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 70); // 70ms per char
+            }
+        }
+
+        // Start typing after a short delay
+        setTimeout(typeWriter, 300);
+
+        setTimeout(() => {
+            splash.classList.add('hide');
+            setTimeout(() => splash.style.display = 'none', 650);
+        }, 3000); // Wait 3 seconds before hiding
+    });
+    // ---- Disclaimer ----
+    function showDisclaimer() {
+        const modal = document.getElementById('disclaimerModal');
+        if (modal) { modal.style.display = 'flex'; }
+    }
+    function acceptDisclaimer() {
+        sessionStorage.setItem('skinai_disclaimer_seen', '1');
+        const modal = document.getElementById('disclaimerModal');
+        if (modal) modal.style.display = 'none';
+    }
+</script>
 
 </body>
+
 </html>

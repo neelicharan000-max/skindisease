@@ -11,6 +11,11 @@ function switchToDashboard() {
   if (dv) dv.style.display = 'block';
   if (window.initDashboard) window.initDashboard();
 }
+window.switchToDashboard = switchToDashboard;
+window.switchToLogin = switchToLogin;
+window.continueAsDemo = continueAsDemo;
+window.switchTab = switchTab;
+window.togglePass = togglePass;
 
 function switchToLogin() {
   const lv = document.getElementById('login-view');
@@ -184,3 +189,7 @@ async function handleRegister(e) {
     showError('registerError', '❌ ' + (err.message || 'Registration failed. Please try again.'));
   }
 }
+
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;
+

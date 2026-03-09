@@ -185,3 +185,24 @@ window.t = t;
 window.setLanguage = setLanguage;
 window.applyTranslations = applyTranslations;
 window.currentLang = () => currentLang;
+
+// Dashboard Language Switcher Helpers
+function toggleDashLang() {
+    const m = document.getElementById('dashLangMenu');
+    m.style.display = m.style.display === 'none' ? 'flex' : 'none';
+}
+function selectDashLang(lang, label) {
+    document.getElementById('dashLangLabel').textContent = label;
+    document.getElementById('dashLangMenu').style.display = 'none';
+    setLanguage(lang);
+}
+window.toggleDashLang = toggleDashLang;
+window.selectDashLang = selectDashLang;
+
+document.addEventListener('click', (e) => {
+    const switcher = document.getElementById('dashLangSwitcher');
+    if (switcher && !switcher.contains(e.target)) {
+        const menu = document.getElementById('dashLangMenu');
+        if (menu) menu.style.display = 'none';
+    }
+});

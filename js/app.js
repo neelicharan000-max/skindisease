@@ -1,13 +1,14 @@
 // SkinAI Main Application Logic
 
-const DEMO_KEY = 'skinai_demo_session';
+// Redundant DEMO_KEY declaration removed (already defined in auth.js)
 
 // ---- Auth Helpers ----
 async function logout() {
-  localStorage.removeItem(DEMO_KEY);
+  localStorage.removeItem('skinai_demo_session');
   try { await window._supabase.auth.signOut(); } catch (e) { }
   if (typeof switchToLogin === 'function') switchToLogin();
 }
+window.logout = logout;
 
 async function getActiveUser() {
   try {
@@ -138,9 +139,37 @@ function loadImageFile(file) {
   const reader = new FileReader();
   reader.onload = (e) => {
     currentImageSrc = e.target.result;
-    showImagePreview(currentImageSrc, file.name, file.size);
+    startFiveSecondLoader(() => {
+      showImagePreview(currentImageSrc, file.name, file.size);
+    });
   };
   reader.readAsDataURL(file);
+}
+
+function startFiveSecondLoader(callback) {
+  const loader = document.getElementById('mainLoader');
+  const fill = document.getElementById('loaderFill');
+  if (!loader || !fill) { callback(); return; }
+
+  loader.classList.add('show');
+  fill.style.width = '0%';
+
+  const startTime = Date.now();
+  const duration = 5000;
+
+  const interval = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min((elapsed / duration) * 100, 100);
+    fill.style.width = progress + '%';
+
+    if (elapsed >= duration) {
+      clearInterval(interval);
+      setTimeout(() => {
+        loader.classList.remove('show');
+        callback();
+      }, 300);
+    }
+  }, 50);
 }
 
 function showImagePreview(src, name, size) {
@@ -160,6 +189,13 @@ function clearImage() {
   document.getElementById('fileInput').value = '';
   document.getElementById('processingBanner').style.display = 'none';
 }
+window.clearImage = clearImage;
+window.handleDragOver = handleDragOver;
+window.handleDragLeave = handleDragLeave;
+window.handleDrop = handleDrop;
+window.handleFileSelect = handleFileSelect;
+window.loadImageFile = loadImageFile;
+window.showImagePreview = showImagePreview;
 
 // ---- Camera ----
 async function setMode(mode) {
@@ -174,11 +210,26 @@ async function setMode(mode) {
     stopCamera();
   }
 }
+window.setMode = setMode;
+window.startCamera = startCamera;
+window.stopCamera = stopCamera;
+window.switchCamera = switchCamera;
+window.capturePhoto = capturePhoto;
+window.analyzeImage = analyzeImage;
+window.showSection = showSection;
+window.toggleSidebar = toggleSidebar;
+window.initDashboard = initDashboard;
 
 async function startCamera() {
   try {
     if (cameraStream) stopCamera();
-    const constraints = { video: { facingMode, width: { ideal: 1280 }, height: { ideal: 960 } } };
+    const constraints = {
+      video: {
+        facingMode,
+        width: { min: 640, ideal: 1280 },
+        height: { min: 480, ideal: 720 }
+      }
+    };
     cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
     document.getElementById('cameraFeed').srcObject = cameraStream;
   } catch (err) {
@@ -213,9 +264,11 @@ function capturePhoto() {
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
   currentImageSrc = canvas.toDataURL('image/jpeg', 0.92);
 
-  showImagePreview(currentImageSrc, 'camera_capture.jpg');
-  // Switch to show preview
-  document.getElementById('imagePreviewWrap').style.display = 'block';
+  startFiveSecondLoader(() => {
+    showImagePreview(currentImageSrc, 'camera_capture.jpg');
+    // Switch to show preview
+    document.getElementById('imagePreviewWrap').style.display = 'block';
+  });
 }
 
 // ---- Analysis / Simulation ----

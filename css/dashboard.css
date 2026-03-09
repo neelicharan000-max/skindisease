@@ -1627,3 +1627,85 @@ body {
     color: #fca5a5;
     font-weight: 500;
 }
+
+/* ===== MINIMAL/LIGHT THEME ===== */
+[data-theme="minimal"] {
+    --bg: #f8fafc;
+    --bg2: #f1f5f9;
+    --card: #ffffff;
+    --card2: #f8fafc;
+    --border: rgba(0, 0, 0, 0.08);
+    --border2: rgba(0, 0, 0, 0.12);
+    --text: #0f172a;
+    --text2: #334155;
+    --text3: #64748b;
+    --purple: #6366f1;
+    --purple-light: #818cf8;
+    --blue: #0ea5e9;
+}
+
+[data-theme="minimal"] .sidebar,
+[data-theme="minimal"] .topbar {
+    background: #ffffff;
+}
+
+[data-theme="minimal"] .sidebar-header {
+    border-bottom: 1px solid var(--border);
+}
+
+[data-theme="minimal"] .brand-name {
+    color: var(--text);
+}
+
+[data-theme="minimal"] .drop-zone {
+    background: rgba(0, 0, 0, 0.015);
+}
+
+[data-theme="minimal"] .form-card,
+[data-theme="minimal"] .upload-panel,
+[data-theme="minimal"] .results-preview-panel {
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid var(--border);
+}
+
+[data-theme="minimal"] .chart-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 7px;
+    color: var(--text2);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s ease;
+    display: grid;
+    place-items: center;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+}
+
+[data-theme="minimal"] .theme-toggle {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    color: var(--text2);
+}
+
+[data-theme="minimal"] .theme-toggle:hover {
+    background: #f1f5f9;
+    color: var(--text);
+}
+
+[data-theme="minimal"] .cam-btn.secondary {
+    color: var(--text2);
+    border: 1px solid var(--border);
+    background: white;
+}

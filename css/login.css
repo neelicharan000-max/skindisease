@@ -746,3 +746,79 @@ body {
     padding: 32px 24px;
   }
 }
+
+/* ===== MINIMAL/LIGHT THEME (Login) ===== */
+[data-theme="minimal"] {
+  --bg: #f8fafc;
+  --bg2: #f1f5f9;
+  --card: #ffffff;
+  --card2: #f8fafc;
+  --border: rgba(0, 0, 0, 0.08);
+  --border2: rgba(0, 0, 0, 0.12);
+  --text: #0f172a;
+  --text2: #334155;
+  --text3: #64748b;
+  --purple: #6366f1;
+  --purple-light: #818cf8;
+  --blue: #0ea5e9;
+}
+
+[data-theme="minimal"] .left-panel {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 60%, #cbd5e1 100%);
+}
+
+[data-theme="minimal"] .hero-content h1 {
+  background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #4f46e5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme="minimal"] .brand-name {
+  color: var(--text);
+}
+
+[data-theme="minimal"] .pill {
+  color: var(--text2);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="minimal"] .pill:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text);
+}
+
+[data-theme="minimal"] .stats-row {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="minimal"] .right-panel {
+  background: var(--card);
+}
+
+[data-theme="minimal"] .input-wrap {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="minimal"] .input-wrap:focus-within {
+  background: #ffffff;
+}
+
+[data-theme="minimal"] .tab-toggle {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="minimal"] .demo-btn {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+/* Fix splash text for minimal theme if visible */
+[data-theme="minimal"] .splash-title {
+  background: linear-gradient(135deg, #0ea5e9, #6366f1, #0ea5e9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
